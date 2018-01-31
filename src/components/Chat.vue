@@ -1,11 +1,11 @@
 <template>
   <div>
     <p>聊天界面</p>
-    <kindedit-emoji></kindedit-emoji>
+    <kindeditor-emoji></kindeditor-emoji>
   </div>
 </template>
 <script>
-import KindeditEmoji from './KindeditEmoji.vue'
+import KindeditorEmoji from './KindeditorEmoji.vue'
 export default {
   name: 'Chat',
   data () {
@@ -14,7 +14,7 @@ export default {
     }
   },
   components: {
-    KindeditEmoji
+    KindeditorEmoji
   }
 }
 </script>

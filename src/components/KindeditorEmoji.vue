@@ -32,14 +32,14 @@
 </template>
 <script>
 export default {
-//  name: 'KindeditEmoji',
+  name: 'KindeditorEmoji',
   data () {
     return {
       title: 'emoji',
       previewFlag: false, // 预览标志
       previewPosition: 'preview-right', // 预览的class
       previewSrc: '', // 预览表情的地址
-      showEmojiFlag: true // 显示表情区域标志
+      showEmojiFlag: false // 显示表情区域标志
     }
   },
   methods: {
