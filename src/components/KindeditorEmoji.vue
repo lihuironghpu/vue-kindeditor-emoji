@@ -24,7 +24,7 @@
         <i class="icon-emoji"></i>
       </span>
     </div>
-    <div contenteditable class="show-select-wrap">
+    <div contenteditable class="show-select-wrap" v-html="textContent" v-on:input="changeMes">
 
     </div>
   </div>
@@ -33,14 +33,35 @@
 <script>
 export default {
   name: 'KindeditorEmoji',
+  props: [
+    'parentTextContent' // 输入框的innerHTML
+  ],
   data () {
     return {
       title: 'emoji',
       previewFlag: false, // 预览标志
       previewPosition: 'preview-right', // 预览的class
       previewSrc: '', // 预览表情的地址
-      showEmojiFlag: false // 显示表情区域标志
+      showEmojiFlag: false, // 显示表情区域标志
+      textContent: this.parentTextContent
     }
+  },
+  mounted () {
+    const self = this
+    // 给window绑定隐藏表情选择框
+    self.bodyListener = (e) => {
+      self.showEmojiFlag = false
+      console.log('++++++++++++')
+      this.textContent = document.querySelector('.show-select-wrap').innerHTML
+      console.log(document.querySelector('.show-select-wrap').innerHTML)
+      console.log(this.textContent)
+      // console.log(this.textContent)
+      this.$emit('update:parentTextContent', this.textContent)
+    }
+    window.document.addEventListener('click', this.bodyListener, false)
+  },
+  beforeDestroy () {
+    window.document.removeEventListener('click', this.bodyListener)
   },
   methods: {
     // 表情预览右上角或者左上角
@@ -55,7 +76,16 @@ export default {
     },
     // 选中表情
     selectEmoji: function (event) {
-      document.querySelector('.show-select-wrap').innerHTML += '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
+      this.textContent += '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
+      this.$emit('update:parentTextContent', this.textContent)
+    },
+    changeMes: function (event) {
+      // console.log('-----------')
+      // console.log(event)
+      // console.log(event.target.innerHTML)
+      // console.log(this.textContent)
+      // this.textContent = event.target.innerHTML
+      // this.$emit('update:parentTextContent', this.textContent)
     },
     // 离开表情选择区域，隐藏左上角或者右上角的预览
     leaveEmojiWrap: function (event) {
@@ -94,6 +124,7 @@ export default {
       return arr
     }
   }
+
 }
 
 </script>
