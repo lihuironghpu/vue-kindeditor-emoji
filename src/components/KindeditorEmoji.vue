@@ -24,7 +24,7 @@
         <i class="icon-emoji"></i>
       </span>
     </div>
-    <div contenteditable class="show-select-wrap" v-html="textContent" v-on:input="changeMes">
+    <div contenteditable class="show-select-wrap" v-html="textContent" v-on:click.stop="focusContent">
 
     </div>
   </div>
@@ -50,12 +50,13 @@ export default {
     const self = this
     // 给window绑定隐藏表情选择框
     self.bodyListener = (e) => {
+      console.log(e)
+      console.log(e.target)
+      if (e.target.dataset && e.target.dataset.type === 'clear') {
+        document.querySelector('.show-select-wrap').innerHTML = ''
+      }
       self.showEmojiFlag = false
-      console.log('++++++++++++')
       this.textContent = document.querySelector('.show-select-wrap').innerHTML
-      console.log(document.querySelector('.show-select-wrap').innerHTML)
-      console.log(this.textContent)
-      // console.log(this.textContent)
       this.$emit('update:parentTextContent', this.textContent)
     }
     window.document.addEventListener('click', this.bodyListener, false)
@@ -76,16 +77,12 @@ export default {
     },
     // 选中表情
     selectEmoji: function (event) {
-      this.textContent += '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
+      this.textContent = document.querySelector('.show-select-wrap').innerHTML + '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
       this.$emit('update:parentTextContent', this.textContent)
     },
-    changeMes: function (event) {
-      // console.log('-----------')
-      // console.log(event)
-      // console.log(event.target.innerHTML)
-      // console.log(this.textContent)
-      // this.textContent = event.target.innerHTML
-      // this.$emit('update:parentTextContent', this.textContent)
+    // 输入域聚焦
+    focusContent: function (event) {
+      this.showEmojiFlag = false
     },
     // 离开表情选择区域，隐藏左上角或者右上角的预览
     leaveEmojiWrap: function (event) {
