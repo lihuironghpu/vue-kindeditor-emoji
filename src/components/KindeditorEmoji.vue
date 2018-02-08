@@ -24,7 +24,7 @@
         <i class="icon-emoji"></i>
       </span>
     </div>
-    <div contenteditable class="show-select-wrap" v-html="textContent" v-on:click.stop="focusContent">
+    <div contenteditable class="show-select-wrap" v-html="parentTextContent" v-on:click.stop="focusContent">
 
     </div>
   </div>
@@ -42,22 +42,18 @@ export default {
       previewFlag: false, // 预览标志
       previewPosition: 'preview-right', // 预览的class
       previewSrc: '', // 预览表情的地址
-      showEmojiFlag: false, // 显示表情区域标志
-      textContent: this.parentTextContent
+      showEmojiFlag: false // 显示表情区域标志
     }
   },
   mounted () {
     const self = this
     // 给window绑定隐藏表情选择框
     self.bodyListener = (e) => {
-      console.log(e)
-      console.log(e.target)
       if (e.target.dataset && e.target.dataset.type === 'clear') {
         document.querySelector('.show-select-wrap').innerHTML = ''
       }
       self.showEmojiFlag = false
-      this.textContent = document.querySelector('.show-select-wrap').innerHTML
-      this.$emit('update:parentTextContent', this.textContent)
+      this.$emit('update:parentTextContent', document.querySelector('.show-select-wrap').innerHTML)
     }
     window.document.addEventListener('click', this.bodyListener, false)
   },
@@ -77,8 +73,7 @@ export default {
     },
     // 选中表情
     selectEmoji: function (event) {
-      this.textContent = document.querySelector('.show-select-wrap').innerHTML + '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
-      this.$emit('update:parentTextContent', this.textContent)
+      this.$emit('update:parentTextContent', document.querySelector('.show-select-wrap').innerHTML + '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>')
     },
     // 输入域聚焦
     focusContent: function (event) {

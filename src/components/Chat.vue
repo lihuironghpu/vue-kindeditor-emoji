@@ -1,9 +1,9 @@
 <template>
   <div>
-    <kindeditor-emoji :parent-text-content.sync="textContent1"></kindeditor-emoji>
+    <kindeditor-emoji :parent-text-content.sync="textContent"></kindeditor-emoji>
     <div style="padding-top: 20px; text-align: left">
-      <button type="button" v-on:click="sendMes" data-type="clear">发送</button>
-      <button type="button" data-type="clear">清空</button>
+      <button type="button" v-on:click.stop="sendMes">发送</button>
+      <button type="button" v-on:click.stop="clearMes">清空</button>
     </div>
     <div v-for="item in contentArr" v-bind:key="item">
       <p v-html="item" style="text-align:left"></p>
@@ -16,7 +16,7 @@ export default {
   name: 'Chat',
   data () {
     return {
-      textContent1: '',
+      textContent: '123',
       contentArr: []
     }
   },
@@ -30,7 +30,12 @@ export default {
         e1.initEvent('click', true, true)
         document.dispatchEvent(e1)
       }
-      this.contentArr.push(this.textContent1)
+      this.contentArr.push(this.textContent)
+      this.textContent = ''
+    },
+    // 点击清空
+    clearMes: function (event) {
+      this.textContent = ''
     }
   },
   components: {
