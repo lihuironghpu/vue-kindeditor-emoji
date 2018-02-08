@@ -24,7 +24,7 @@
         <i class="icon-emoji"></i>
       </span>
     </div>
-    <div contenteditable class="show-select-wrap" v-html="parentTextContent" v-on:click.stop="focusContent">
+    <div contenteditable class="show-select-wrap" v-html="textContent" v-on:click.stop="focusContent" v-on:input="inputChange">
 
     </div>
   </div>
@@ -34,7 +34,7 @@
 export default {
   name: 'KindeditorEmoji',
   props: [
-    'parentTextContent' // 输入框的innerHTML
+    'initText'// 输入框的初始内容
   ],
   data () {
     return {
@@ -42,18 +42,15 @@ export default {
       previewFlag: false, // 预览标志
       previewPosition: 'preview-right', // 预览的class
       previewSrc: '', // 预览表情的地址
-      showEmojiFlag: false // 显示表情区域标志
+      showEmojiFlag: false, // 显示表情区域标志
+      textContent: this.initText
     }
   },
   mounted () {
     const self = this
     // 给window绑定隐藏表情选择框
     self.bodyListener = (e) => {
-      if (e.target.dataset && e.target.dataset.type === 'clear') {
-        document.querySelector('.show-select-wrap').innerHTML = ''
-      }
       self.showEmojiFlag = false
-      this.$emit('update:parentTextContent', document.querySelector('.show-select-wrap').innerHTML)
     }
     window.document.addEventListener('click', this.bodyListener, false)
   },
@@ -73,7 +70,8 @@ export default {
     },
     // 选中表情
     selectEmoji: function (event) {
-      this.$emit('update:parentTextContent', document.querySelector('.show-select-wrap').innerHTML + '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>')
+      this.textContent = document.querySelector('.show-select-wrap').innerHTML + '<img src=' + event.target.dataset.src + ' alt=' + event.target.dataset.alt + '>'
+      this.$emit('contentChange', this.textContent)
     },
     // 输入域聚焦
     focusContent: function (event) {
@@ -82,6 +80,15 @@ export default {
     // 离开表情选择区域，隐藏左上角或者右上角的预览
     leaveEmojiWrap: function (event) {
       this.previewFlag = false
+    },
+    // 监听输入框变化
+    inputChange: function (event) {
+      this.$emit('contentChange', document.querySelector('.show-select-wrap').innerHTML)
+    },
+    // 清空
+    clearContent: function () {
+      this.textContent = ''
+      document.querySelector('.show-select-wrap').innerHTML = ''
     }
   },
   computed: {
